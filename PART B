@@ -1,0 +1,187 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+const int MAX = 10;
+
+class Professor {
+public:
+    string name;
+    Professor() : name("") {}
+    Professor(string name) : name(name) {}
+};
+
+class Course {
+public:
+    string title;
+    Professor* instructor;
+    Course() : title(""), instructor(nullptr) {}
+    Course(string title, Professor* instructor) : title(title), instructor(instructor) {}
+};
+
+class Classroom {
+public:
+    string roomNumber;
+    Classroom() : roomNumber("") {}
+    Classroom(string number) : roomNumber(number) {}
+};
+
+class Schedule {
+public:
+    Course* course;
+    Classroom* classroom;
+    string timeSlot;
+
+    Schedule() : course(nullptr), classroom(nullptr), timeSlot("") {}
+    Schedule(Course* c, Classroom* r, string time) : course(c), classroom(r), timeSlot(time) {}
+
+    void display() {
+        cout << "Course: " << course->title
+             << ", Instructor: " << course->instructor->name
+             << ", Room: " << classroom->roomNumber
+             << ", Time: " << timeSlot << endl;
+    }
+};
+
+class Student {
+public:
+    string name;
+    Course* courses[MAX];
+    int courseCount;
+
+    Student() : name(""), courseCount(0) {}
+
+    Student(string name) : name(name), courseCount(0) {}
+
+    void enroll(Course* course) {
+        if (courseCount < MAX) {
+            courses[courseCount++] = course;
+        }
+    }
+
+    void displayCourses() {
+        cout << name << " is enrolled in:\n";
+        for (int i = 0; i < courseCount; i++) {
+            cout << "- " << courses[i]->title << endl;
+        }
+    }
+};
+
+class GraduateStudent : public Student {
+public:
+    Professor* advisor;
+
+    GraduateStudent() : advisor(nullptr) {}
+
+    GraduateStudent(string name, Professor* advisor)
+        : Student(name), advisor(advisor) {}
+
+    void displayAdvisor() {
+        cout << name << "'s advisor is " << advisor->name << endl;
+    }
+};
+
+class Department {
+private:
+    string name;
+    Professor professors[MAX];
+    Course courses[MAX];
+    int professorCount;
+    int courseCount;
+
+public:
+    Department() : name(""), professorCount(0), courseCount(0) {}
+
+    Department(string name) : name(name), professorCount(0), courseCount(0) {}
+
+    void addProfessor(string profName) {
+        if (professorCount < MAX) {
+            professors[professorCount++] = Professor(profName);
+        }
+    }
+
+    void addCourse(string title, Professor* instructor) {
+        if (courseCount < MAX) {
+            courses[courseCount++] = Course(title, instructor);
+        }
+    }
+
+    string getName() const {
+        return name;
+    }
+
+    int getProfessorCount() const {
+        return professorCount;
+    }
+
+    Professor* getProfessor(int i) {
+        if (i >= 0 && i < professorCount) return &professors[i];
+        return nullptr;
+    }
+
+    int getCourseCount() const {
+        return courseCount;
+    }
+
+    Course* getCourse(int i) {
+        if (i >= 0 && i < courseCount) return &courses[i];
+        return nullptr;
+    }
+};
+
+class University {
+private:
+    Department departments[MAX];
+    int deptCount;
+
+public:
+    University() : deptCount(0) {}
+
+    void addDepartment(string name) {
+        if (deptCount < MAX) {
+            departments[deptCount++] = Department(name);
+        }
+    }
+
+    void removeDepartment(string name) {
+        for (int i = 0; i < deptCount; i++) {
+            if (departments[i].getName() == name) {
+                for (int j = i; j < deptCount - 1; j++) {
+                    departments[j] = departments[j + 1];
+                }
+                deptCount--;
+                break;
+            }
+        }
+    }
+
+    void listProfessors() {
+        for (int i = 0; i < deptCount; i++) {
+            Department& d = departments[i];
+            for (int j = 0; j < d.getProfessorCount(); j++) {
+                cout << "Professor: " << d.getProfessor(j)->name
+                     << " (Department: " << d.getName() << ")\n";
+            }
+        }
+    }
+
+    void listCourses() {
+        for (int i = 0; i < deptCount; i++) {
+            Department& d = departments[i];
+            for (int j = 0; j < d.getCourseCount(); j++) {
+                Course* c = d.getCourse(j);
+                cout << "Course: " << c->title << ", Instructor: " << c->instructor->name
+                     << " (Department: " << d.getName() << ")\n";
+            }
+        }
+    }
+
+    Department* getDepartment(int index) {
+        if (index >= 0 && index < deptCount) return &departments[index];
+        return nullptr;
+    }
+
+    int getDepartmentCount() const {
+        return deptCount;
+    }
+};
