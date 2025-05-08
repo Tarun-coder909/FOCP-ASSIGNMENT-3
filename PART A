@@ -1,0 +1,142 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Person {
+private:
+    string name;
+    int age;
+
+public:
+    Person() : name(""), age(0) {}
+    Person(string name, int age) {
+        setName(name);
+        setAge(age);
+    }
+
+    void setName(string name) { if (!name.empty()) this->name = name; }
+    string getName() const { return name; }
+
+    void setAge(int age) { this->age = age; }
+    int getAge() const { return age; }
+
+    virtual void displayDetails() const {
+        cout << "Name: " << name << ", Age: " << age << endl;
+    }
+
+    virtual double calculatePayment() const {
+        return 0.0;
+    }
+};
+
+class Student : public Person {
+private:
+    float gpa;
+
+public:
+    Student() : gpa(0.0f) {}
+    Student(string name, int age, float gpa) : Person(name, age) {
+        setGPA(gpa);
+    }
+
+    void setGPA(float gpa) { if (gpa >= 0.0f && gpa <= 4.0f) this->gpa = gpa; }
+    float getGPA() const { return gpa; }
+
+    void displayDetails() const override {
+        Person::displayDetails();
+        cout << "GPA: " << gpa << endl;
+    }
+
+    double calculatePayment() const override {
+        return 4000.0;
+    }
+};
+
+class UndergraduateStudent : public Student {
+public:
+    UndergraduateStudent(string name, int age, float gpa)
+        : Student(name, age, gpa) {}
+
+    void displayDetails() const override {
+        Student::displayDetails();
+        cout << "Type: Undergraduate" << endl;
+    }
+
+    double calculatePayment() const override {
+        return 3500.0;
+    }
+};
+
+class GraduateStudent : public Student {
+public:
+    GraduateStudent(string name, int age, float gpa)
+        : Student(name, age, gpa) {}
+
+    void displayDetails() const override {
+        Student::displayDetails();
+        cout << "Type: Graduate" << endl;
+    }
+
+    double calculatePayment() const override {
+        return 3000.0;
+    }
+};
+
+class Professor : public Person {
+public:
+    Professor(string name, int age) : Person(name, age) {}
+
+    void displayDetails() const override {
+        Person::displayDetails();
+        cout << "Position: Professor" << endl;
+    }
+
+    double calculatePayment() const override {
+        return 100000.0;
+    }
+};
+
+class AssistantProfessor : public Professor {
+public:
+    AssistantProfessor(string name, int age)
+        : Professor(name, age) {}
+
+    void displayDetails() const override {
+        Professor::displayDetails();
+        cout << "Rank: Assistant" << endl;
+    }
+
+    double calculatePayment() const override {
+        return 70000.0;
+    }
+};
+
+class AssociateProfessor : public Professor {
+public:
+    AssociateProfessor(string name, int age)
+        : Professor(name, age) {}
+
+    void displayDetails() const override {
+        Professor::displayDetails();
+        cout << "Rank: Associate" << endl;
+    }
+
+    double calculatePayment() const override {
+        return 90000.0;
+    }
+};
+
+class FullProfessor : public Professor {
+public:
+    FullProfessor(string name, int age)
+        : Professor(name, age) {}
+
+    void displayDetails() const override {
+        Professor::displayDetails();
+        cout << "Rank: Full" << endl;
+    }
+
+    double calculatePayment() const override {
+        return 120000.0;
+    }
+};
